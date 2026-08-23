@@ -1,118 +1,55 @@
-# AfriPOP — Refresh Our Pride
+# AfriPOP Landing Page
 
-A single-page marketing site for **AfriPOP** (Bidco Africa), built around the brand's "Age of RE" campaign — five flavours, five stories, one drink.
+A single-file HTML landing page for AfriPOP soft drinks ("Refresh Our Pride" / "The Age of RE"), covering the hero, brand manifesto, flavour lineup, and store-locator sections.
 
-🔗 **Live site:** _add your GitHub Pages link here once deployed_
+## File
 
----
+- `AfriPOP_updated.html` — the entire site (HTML + CSS + JS in one file, no build step required).
 
-## What's in the page
+## How to use it
 
-| Section | What it does |
+1. Open `AfriPOP_updated.html` directly in a browser to preview it, or upload it to any static web host (Netlify, Vercel, GitHub Pages, or your own server).
+2. All images are referenced from a local `assets/` folder that sits next to the HTML file. Create that folder and drop in the files listed below before the page will display correctly — right now the `<img>` tags point to filenames that don't exist yet on your server.
+
+## Required assets (place in `/assets`)
+
+| Filename | Used for |
 |---|---|
-| **Hero** | Cycles through all five flavours automatically (Cola → Orange → Ginger → Lemon Lime → Blackcurrant), recolouring the background, swapping the bottle image, and updating the flavour tag in sync. Click a dot to jump to a flavour directly. |
-| **Manifesto** | Scroll-triggered reveal of the "RE." statement line by line. |
-| **The Movement** | Brand pillars (Rebuild, Rejoice, Reignite, Refresh, Reimagine), one per flavour. |
-| **Flavours** | Horizontal scroll-snap card row for all five products. |
-| **The Age of RE** | Interactive accordion — tap a flavour to see its story. |
-| **Find AfriPOP** | Store-locator CTA with a QR code card, styled in the brand's cream/gold palette. |
-| **Final statement** | Closing scroll-reveal + logo + CTA. |
+| `gold option 1_ (2).png` | Logo (nav, footer, final section) |
+| `africa-pattern-map.png` | Faint repeating hero background texture |
+| `cola.png` | Cola bottle (hero + flavour card) |
+| `Orange.png` | Orange bottle |
+| `Ginger.png` | Ginger bottle |
+| `Lemonlime.png` | Lemon Lime bottle |
+| `Blackcurrant.png` | Blackcurrant bottle |
+| `1.png`–`6.png` (used: 1,2,3,5,6) | Bottle images shown in the "Age of RE" tap panels |
+| `BIDCO QR CODE.jpeg` | QR code in the "Find AfriPOP" section |
+| `Pride africa.png` | Small brand mark in the footer |
 
-Everything is plain **HTML, CSS, and vanilla JavaScript** — no build step, no dependencies.
+Filenames must match exactly (case-sensitive on most hosts, including spaces).
 
----
+## Sections in the page (in order)
 
-## File structure
+1. **Nav** — logo, links, "Find AfriPOP" button.
+2. **Hero** — auto-cycles through the 5 flavours every 4.4s (background color, bottle image, and label all switch together). Dots at the top let a visitor jump to a flavour directly.
+3. **Manifesto** — short animated line-by-line statement, fades in on scroll.
+4. **About / Pillars** — brand statement plus 5 colour-coded cards, one per flavour, using the flavour copy from your shop description doc.
+5. **Flavours** — horizontally scrollable flavour cards (same copy as the pillars).
+6. **Age of RE** — clickable list; tapping a flavour name expands a panel with its bottle image and description.
+7. **Find AfriPOP** — store-locator CTA with a QR code (labelled "AfriPOP Store," not "Pride Station").
+8. **Final statement** — closing animated lines + logo + CTA.
+9. **Footer** — nav links, social icons (Facebook, Instagram, TikTok — already linked to your real profiles), copyright line.
 
-```
-.
-├── afripop.html            # the whole site (single file)
-├── assets/
-│   ├── gold_option_1___2_.png     # AfriPOP logo (nav + footer)
-│   ├── africa-pattern-map.png     # Pride Mark pattern (hero texture + footer mark)
-│   ├── AFRIPOP_PACKSOT.png        # full bottle range (used in flavours/footer if referenced)
-│   ├── 1.png                      # Cola bottle
-│   ├── 2.png                      # Orange bottle
-│   ├── 3.png                      # Ginger bottle
-│   ├── 5.png                      # Lemon Lime bottle
-│   ├── 6.png                      # Blackcurrant bottle
-│   └── BIDCO_QR_CODE.jpeg         # store-locator QR code
-└── README.md
-```
+## Editing copy or links
 
-> **Note:** the asset filenames above are what the HTML expects. If you rename an image, update the matching `src=`/`background-image` reference in `afripop.html`, or vice versa.
+Everything is plain HTML — search the file for the text you want to change and edit it directly. A few landmarks:
 
----
+- Flavour descriptions appear in **three places** (pillar cards, flavour cards, and the Age of RE `data-desc` attributes) — update all three together to keep copy consistent.
+- Social links are in the `<footer>` under `.foot-social` — swap the `href` values to update destinations, or replace the inline SVGs with your own icon images if you'd rather use official logo art.
+- The word "Pride" is intentionally used only once, in the "Refresh Our Pride" tagline, to avoid any association with unrelated movements.
 
-## Running it locally
+## Notes / things to double check
 
-No build tools needed — just open the file:
-
-```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
-open afripop.html   # or just double-click it
-```
-
-If you'd rather serve it (recommended, avoids some browser file:// restrictions):
-
-```bash
-python3 -m http.server 8000
-# then visit http://localhost:8000/afripop.html
-```
-
----
-
-## Deploying with GitHub Pages
-
-1. Push this repo to GitHub.
-2. Go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to `Deploy from a branch`, pick `main` (or your default branch) and `/ (root)`.
-4. Save — GitHub gives you a live URL a minute or two later, e.g. `https://<username>.github.io/<repo>/afripop.html`.
-5. If you want the page at the root of the URL instead of `/afripop.html`, rename `afripop.html` to `index.html`.
-
----
-
-## Brand palette
-
-| Colour | Hex | Use |
-|---|---|---|
-| White | `#FFFFFF` | Backgrounds, logo support, negative space |
-| Premium tan | `#E8D8B8` | Premium backgrounds, hero graphics, high-impact brand moments |
-| Cream | `#F3EBDD` | Page background |
-| Tan | `#DFC58F` | Supporting/secondary surfaces |
-| Gold | `#C9A227` | Accents, CTAs, hero base |
-| Ink | `#2F2F2F` | Body text, dark surfaces |
-
-| Flavour | Hex |
-|---|---|
-| Cola | `#E53935` |
-| Orange | `#FF8A00` |
-| Ginger (Tangawizi) | `#6D4C41` |
-| Lemon Lime | `#21B14B` |
-| Blackcurrant | `#7B1FA2` |
-
-Flavour colours are reserved for flavour-specific moments (bottle glows, the Age of RE accordion, flavour cards). Brand-wide sections (hero base, Find AfriPOP) use the gold/cream family so no single flavour is favoured.
-
-## Typography
-
-- **Comfortaa Bold** — logo, brand name, main headlines
-- **Caveat Bold** — slogans and campaign lines ("Refresh Our Pride!")
-- **Poppins** — body text, descriptions
-
-All loaded via Google Fonts in the `<head>`.
-
----
-
-## Customising
-
-- **Swap bottle/logo images** → replace the files in `assets/` (keep the same filenames, or update the `src` attributes in `afripop.html`).
-- **Change hero timing** → in the `<script>` at the bottom of the file, edit `4400` (milliseconds) in `restartHeroTimer()`.
-- **Edit copy** → all headline/body text lives directly in the HTML, no CMS.
-- **Add social preview tags** → add `<title>`, `<meta name="description">`, and Open Graph tags to `<head>` so shared links show the right title/description/image.
-
----
-
-## Credits
-
-AfriPOP is a product of **Bidco Africa**. Site built as part of the "Age of RE" campaign concept.
+- No external JS libraries are used — everything (the hero rotation, scroll-reveal animations, and the Age of RE accordion) is vanilla JavaScript in the `<script>` tag at the bottom.
+- Fonts (Comfortaa, Caveat, Poppins) load from Google Fonts via the `<link>` tags in `<head>` — an internet connection is needed for them to render as designed.
+- The page is responsive down to mobile widths, with layout adjustments defined in the `@media (max-width:860px)` and `@media (max-width:960px)` blocks.
