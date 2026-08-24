@@ -169,7 +169,7 @@
   @keyframes float{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-16px) rotate(1deg);}}
 
   /* ---------- MANIFESTO ---------- */
-  .manifesto{background:var(--white);padding:clamp(64px,12vh,140px) clamp(20px,5vw,64px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:.15em;}
+  .manifesto{background:var(--white);padding:clamp(40px,7vh,88px) clamp(20px,5vw,64px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:.15em;}
   .manifesto .line{font-weight:600;font-size:clamp(1.4rem,4vw,2.6rem);opacity:.14;transform:translateY(20px);transition:opacity .8s var(--ease), transform .8s var(--bounce);}
   .manifesto .line.in-view{opacity:1;transform:translateY(0);}
   .manifesto .line.mega{
@@ -178,8 +178,8 @@
   }
 
   /* ---------- ABOUT / PILLARS ---------- */
-  .about{background:var(--white);padding:clamp(56px,10vh,120px) clamp(20px,5vw,64px) clamp(64px,12vh,140px);}
-  .about-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:50px;align-items:center;margin-bottom:8vh;}
+  .about{background:var(--white);padding:clamp(32px,5vh,64px) clamp(20px,5vw,64px) clamp(48px,8vh,100px);}
+  .about-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:50px;align-items:center;margin-bottom:clamp(40px,6vh,72px);}
   .about h2{font-size:clamp(2rem,5vw,3.4rem);margin-bottom:18px;}
   .about p{max-width:440px;color:rgba(26,26,26,.68);line-height:1.7;font-size:1rem;}
   .about p b{color:var(--ink);}
@@ -318,11 +318,12 @@
     .hero-visual{min-height:240px;}
     .hero-bottle{height:68%;max-height:220px;}
 
-    .manifesto{gap:.3em;}
+    .manifesto{padding:36px 20px;gap:.3em;}
     .manifesto .line{font-size:clamp(1.15rem,5vw,1.6rem);}
-    .manifesto .line.mega{font-size:clamp(2.6rem,16vw,4.4rem);}
+    .manifesto .line.mega{font-size:clamp(2.6rem,16vw,4.4rem);margin:.1em 0;}
 
-    .about-grid{grid-template-columns:1fr;gap:32px;margin-bottom:6vh;text-align:center;}
+    .about{padding:8px 20px 40px;}
+    .about-grid{grid-template-columns:1fr;gap:28px;margin-bottom:36px;text-align:center;}
     .about p{max-width:100%;margin:0 auto;}
     .badge-cluster{
       position:static;height:auto;display:flex;flex-wrap:wrap;
@@ -333,25 +334,30 @@
     .pillar-grid{grid-template-columns:1fr;gap:14px;}
     .pillar-card{padding:22px 20px;}
 
-    .flavours-head{margin-bottom:5vh;}
+    .flavours{padding:8px 20px 40px;}
+    .flavours-head{margin-bottom:28px;}
     .flav-row{gap:18px;padding:8px 4px 26px;}
     .flav-card{min-width:210px;flex:0 0 210px;padding:28px 18px 22px;}
 
+    .age{padding:40px 20px;}
     .age-head p{max-width:100%;}
     .re-item{padding:18px 4px;}
     .re-panel{flex-direction:column;text-align:center;gap:14px;padding:20px;}
     .re-panel .txt p{max-width:100%;}
 
+    .find{padding:40px 20px;}
     .find-ctas{flex-direction:column;width:100%;}
     .find-ctas .btn-pill{width:100%;justify-content:center;}
     .qr-card{max-width:220px;}
 
+    .final{padding:40px 20px 32px;gap:.4em;}
+    .final .logo{margin:2vh auto 1.6vh;}
     .final .btn-pill{width:100%;justify-content:center;}
 
-    footer{padding:36px clamp(16px,5vw,28px) 28px;}
-    .foot-top{flex-direction:column;text-align:center;gap:22px;padding-bottom:24px;}
+    footer{padding:28px clamp(16px,5vw,28px) 22px;}
+    .foot-top{flex-direction:column;text-align:center;gap:20px;padding-bottom:20px;}
     .foot-links{justify-content:center;}
-    .foot-bottom{flex-direction:column;text-align:center;gap:14px;padding-top:20px;}
+    .foot-bottom{flex-direction:column;text-align:center;gap:12px;padding-top:16px;}
   }
 
   @media (max-width:420px){
@@ -586,7 +592,7 @@
     <div class="foot-bottom">
       <span>Proudly Kenyan owned.</span>
       <img class="pride-mark" src="assets/Pride africa.png" alt="AfriPOP Mark">
-      <span>© AfriPOP · Bidco Africa</span>
+      <span>© Afripop East Africa</span>
     </div>
   </div>
 </footer>
