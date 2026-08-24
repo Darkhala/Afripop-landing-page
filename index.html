@@ -59,11 +59,12 @@
     padding:22px clamp(16px,4vw,40px);
   }
   .brand-logo{
-    background:var(--white);border-radius:100px;padding:8px 20px 8px 8px;
-    display:flex;align-items:center;gap:10px;
-    box-shadow:0 6px 18px rgba(26,26,26,.08);
+    background:rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.22);border-radius:100px;padding:6px 16px 6px 6px;
+    display:flex;align-items:center;gap:8px;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
   }
-  .brand-logo img{height:30px;width:auto;}
+  .brand-logo img{height:32px;width:auto;}
   .brand-logo span{font-family:'Comfortaa',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.45;}
   .nav-links{display:flex;gap:30px;font-size:.82rem;font-weight:600;}
   .nav-links a{opacity:.7;transition:opacity .25s;}
@@ -307,6 +308,12 @@
   .final .logo{width:150px;margin:3vh auto 2.5vh;}
   .gsap-ready .manifesto .line:not(.mega), .gsap-ready .final .line{transition:none;}
 
+  /* ---------- SCROLL REVEALS (progressive enhancement, gated on GSAP being present) ---------- */
+  .gsap-ready .pillar-card,.gsap-ready .flav-card,.gsap-ready .about-intro,.gsap-ready .foot-top,.gsap-ready .foot-bottom{opacity:0;transform:translateY(32px);}
+  .gsap-ready .find-copy{opacity:0;transform:translateX(-36px);}
+  .gsap-ready .qr-wrap{opacity:0;transform:translateX(36px);}
+  .gsap-ready .badge-cluster{opacity:0;}
+
   /* ---------- FOOTER ---------- */
   footer{background:var(--white);padding:clamp(40px,6vh,72px) clamp(20px,5vw,64px) clamp(28px,4vh,48px);}
   .foot-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px 30px;align-items:center;padding-bottom:clamp(24px,4vh,40px);border-bottom:1px solid rgba(26,26,26,.1);}
@@ -332,8 +339,8 @@
 
   @media (max-width:680px){
     nav{padding:16px clamp(14px,4vw,24px);}
-    .brand-logo{padding:7px 16px 7px 7px;}
-    .brand-logo img{height:26px;}
+    .brand-logo{padding:5px 14px 5px 5px;}
+    .brand-logo img{height:28px;}
     .nav-cta{padding:11px 18px;font-size:.74rem;}
 
     .hero{min-height:auto;padding:64px clamp(16px,5vw,28px) 36px;}
@@ -466,7 +473,7 @@
 <section class="about" id="about">
   <div class="wrap">
     <div class="about-grid">
-      <div>
+      <div class="about-intro">
         <div class="eyebrow" style="color:var(--f-cola);">African — I Can</div>
         <h2>African — I Can.<br>African — I Will.</h2>
         <p>The future will not be imported. <b>The future will be created</b> — by a generation that builds its own culture, sound and identity, one bottle at a time.</p>
@@ -599,7 +606,7 @@
 <footer>
   <div class="wrap">
     <div class="foot-top">
-      <div class="brand-logo" style="box-shadow:none;padding:0;background:transparent;">
+      <div class="brand-logo" style="box-shadow:none;padding:0;background:transparent;border:none;backdrop-filter:none;">
         <img src="assets/gold option 1_ (2).png" alt="AfriPOP" style="height:34px;">
       </div>
       <div class="foot-links">
@@ -631,6 +638,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" crossorigin="anonymous"></script>
 
 <script>
   const heroFlavors = [
@@ -682,6 +690,70 @@
   if (gsapReady) {
     gsap.registerPlugin(ScrollTrigger);
     document.documentElement.classList.add('gsap-ready');
+  }
+
+  // ---------- Smooth momentum scroll (desktop only; touch devices keep native scroll) ----------
+  if (gsapReady && window.Lenis && window.matchMedia('(min-width: 861px) and (hover: hover)').matches) {
+    const lenis = new Lenis({ smoothWheel: true, syncTouch: false, touchMultiplier: 0 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (id.length < 2) return;
+        const target = document.querySelector(id);
+        if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: -10, duration: 1.2 }); }
+      });
+    });
+  }
+
+  // ---------- Reveal-on-scroll helper (guards against fighting existing CSS hover transitions) ----------
+  function withHeldTransition(els, run) {
+    els.forEach(el => { el.dataset._t = el.style.transition; el.style.transition = 'none'; });
+    run(() => els.forEach(el => { el.style.transition = el.dataset._t || ''; delete el.dataset._t; }));
+  }
+  function revealOnScroll(selector, to, start) {
+    gsap.utils.toArray(selector).forEach(el => {
+      ScrollTrigger.create({
+        trigger: el, start: start || 'top 88%', once: true,
+        onEnter: () => withHeldTransition([el], restore => {
+          gsap.to(el, Object.assign({ duration: .9, ease: 'power2.out', clearProps: 'transform', onComplete: restore }, to));
+        }),
+      });
+    });
+  }
+
+  if (gsapReady) {
+    // Grouped, staggered card reveals
+    ['.pillar-card', '.flav-card'].forEach(sel => {
+      ScrollTrigger.batch(sel, {
+        start: 'top 88%',
+        onEnter: batch => withHeldTransition(batch, restore => {
+          gsap.to(batch, { opacity: 1, y: 0, duration: .8, ease: 'power2.out', stagger: .1, overwrite: true, clearProps: 'transform', onComplete: restore });
+        }),
+      });
+    });
+
+    revealOnScroll('.about-intro', { opacity: 1, y: 0 });
+    revealOnScroll('.badge-cluster', { opacity: 1 }, 'top 90%');
+    revealOnScroll('.find-copy', { opacity: 1, x: 0 }, 'top 85%');
+    revealOnScroll('.qr-wrap', { opacity: 1, x: 0 }, 'top 85%');
+    revealOnScroll('.foot-top', { opacity: 1, y: 0 });
+    revealOnScroll('.foot-bottom', { opacity: 1, y: 0 });
+
+    // Hero: gentle parallax + recede-on-scroll, desktop only (matches the pin/scrub gating elsewhere)
+    ScrollTrigger.matchMedia({
+      '(min-width: 861px)': function () {
+        const heroTl = gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .4 } });
+        heroTl
+          .to('.hero-visual', { yPercent: 10, ease: 'none' }, 0)
+          .to('.hero-glow', { yPercent: -18, ease: 'none' }, 0)
+          .to('.hero-copy', { opacity: .25, yPercent: -12, ease: 'none' }, 0);
+        return () => heroTl.scrollTrigger && heroTl.scrollTrigger.kill();
+      }
+    });
   }
 
   // ---------- Manifesto / Final line reveal ----------
