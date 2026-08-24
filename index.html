@@ -241,10 +241,24 @@
   }
 
   /* ---------- AGE OF RE ---------- */
-  .age{background:linear-gradient(150deg, var(--ink), #2c2c2c);color:var(--cream);padding:clamp(64px,12vh,130px) clamp(20px,5vw,64px);display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:start;}
+  @property --stage-tag{ syntax:'<color>'; inherits:true; initial-value:#c9a227; }
+  .age{background:linear-gradient(150deg, var(--ink), #2c2c2c);color:var(--cream);}
+  .age-pin{
+    position:relative;overflow:hidden;
+    padding:clamp(64px,12vh,130px) clamp(20px,5vw,64px);
+    display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:start;
+    --stage-tag:#c9a227;transition:--stage-tag 1s var(--ease);
+  }
+  .age-pin::before{
+    content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 82% 8%, var(--stage-tag) 0%, transparent 62%);
+    opacity:.32;mix-blend-mode:screen;
+  }
+  .age-head,.age-pin .re-list{position:relative;z-index:1;}
   .age-head h2{font-size:clamp(2.2rem,5.6vw,4.2rem);color:var(--white);}
   .age-head .eyebrow{color:var(--gold);margin-bottom:20px;}
   .age-head p{margin-top:22px;max-width:380px;color:rgba(255,246,229,.55);line-height:1.7;font-size:.95rem;}
+  #ageHint{opacity:.85;}
   .re-list{display:flex;flex-direction:column;border-top:2px solid rgba(255,246,229,.14);}
   .re-item{display:flex;align-items:baseline;justify-content:space-between;padding:22px 6px;border-bottom:2px solid rgba(255,246,229,.14);cursor:pointer;transition:padding-left .3s var(--bounce);}
   .re-item:hover{padding-left:16px;}
@@ -277,6 +291,7 @@
   .final .line.in-view{opacity:1;transform:translateY(0);}
   .final .line.script{font-family:'Caveat',cursive;font-weight:700;font-size:clamp(2.2rem,6.4vw,4.4rem);color:var(--gold);margin-top:.15em;}
   .final .logo{width:150px;margin:3vh auto 2.5vh;}
+  .gsap-ready .manifesto .line:not(.mega), .gsap-ready .final .line{transition:none;}
 
   /* ---------- FOOTER ---------- */
   footer{background:var(--white);padding:clamp(40px,6vh,72px) clamp(20px,5vw,64px) clamp(28px,4vh,48px);}
@@ -293,7 +308,7 @@
   /* ---------- RESPONSIVE ---------- */
   @media (max-width:860px){
     .hero-grid,.find{grid-template-columns:1fr;gap:36px;}
-    .age{grid-template-columns:1fr;gap:44px;}
+    .age-pin{grid-template-columns:1fr;gap:44px;}
     .hero-visual{order:-1;min-height:300px;}
     .hero-bottle{height:76%;max-height:280px;}
     .find{text-align:center;}
@@ -339,7 +354,7 @@
     .flav-row{gap:18px;padding:8px 4px 26px;}
     .flav-card{min-width:210px;flex:0 0 210px;padding:28px 18px 22px;}
 
-    .age{padding:40px 20px;}
+    .age-pin{padding:40px 20px;}
     .age-head p{max-width:100%;}
     .re-item{padding:18px 4px;}
     .re-panel{flex-direction:column;text-align:center;gap:14px;padding:20px;}
@@ -511,26 +526,28 @@
 
 <!-- AGE OF RE -->
 <section class="age" id="age">
-  <div class="age-head">
-    <div class="eyebrow">The Age of RE</div>
-    <h2>Five stories.<br>One drink.</h2>
-    <p>Every AfriPOP flavour carries its own RE. Tap one to hear what it stands for.</p>
-  </div>
-  <div class="re-list" id="reList">
-    <div class="re-item" data-flavor="Cola" data-tag="#e53935" data-img="assets/cola.png" data-desc="Feel alive with our bold, classic, unapologetically African flavour.">
-      <span class="word">Rebuild</span><span class="flavor-tag">Cola</span>
+  <div class="age-pin" id="agePin">
+    <div class="age-head">
+      <div class="eyebrow">The Age of RE</div>
+      <h2>Five stories.<br>One drink.</h2>
+      <p>Every AfriPOP flavour carries its own RE. <span id="ageHint">Tap one to hear what it stands for.</span></p>
     </div>
-    <div class="re-item" data-flavor="Orange" data-tag="#ff8a00" data-img="assets/Orange.png" data-desc="Bring the light — taste the warmth of African sunshine.">
-      <span class="word">Rejoice</span><span class="flavor-tag">Orange</span>
-    </div>
-    <div class="re-item" data-flavor="Ginger" data-tag="#6d4c41" data-img="assets/Ginger.png" data-desc="Rooted in heritage. The fire inside of us.">
-      <span class="word">Reignite</span><span class="flavor-tag">Ginger</span>
-    </div>
-    <div class="re-item" data-flavor="Lemon Lime" data-tag="#21b14b" data-img="assets/Lemonlime.png" data-desc="So cool. So fresh. So bright.">
-      <span class="word">Refresh</span><span class="flavor-tag">Lemon Lime</span>
-    </div>
-    <div class="re-item" data-flavor="Blackcurrant" data-tag="#7b1fa2" data-img="assets/Blackcurrant.png" data-desc="Creative. Bold. Unexpected. Feel the hype.">
-      <span class="word">Reimagine</span><span class="flavor-tag">Blackcurrant</span>
+    <div class="re-list" id="reList">
+      <div class="re-item" data-flavor="Cola" data-tag="#e53935" data-img="assets/cola.png" data-desc="Feel alive with our bold, classic, unapologetically African flavour.">
+        <span class="word">Rebuild</span><span class="flavor-tag">Cola</span>
+      </div>
+      <div class="re-item" data-flavor="Orange" data-tag="#ff8a00" data-img="assets/Orange.png" data-desc="Bring the light — taste the warmth of African sunshine.">
+        <span class="word">Rejoice</span><span class="flavor-tag">Orange</span>
+      </div>
+      <div class="re-item" data-flavor="Ginger" data-tag="#6d4c41" data-img="assets/Ginger.png" data-desc="Rooted in heritage. The fire inside of us.">
+        <span class="word">Reignite</span><span class="flavor-tag">Ginger</span>
+      </div>
+      <div class="re-item" data-flavor="Lemon Lime" data-tag="#21b14b" data-img="assets/Lemonlime.png" data-desc="So cool. So fresh. So bright.">
+        <span class="word">Refresh</span><span class="flavor-tag">Lemon Lime</span>
+      </div>
+      <div class="re-item" data-flavor="Blackcurrant" data-tag="#7b1fa2" data-img="assets/Blackcurrant.png" data-desc="Creative. Bold. Unexpected. Feel the hype.">
+        <span class="word">Reimagine</span><span class="flavor-tag">Blackcurrant</span>
+      </div>
     </div>
   </div>
 </section>
@@ -598,6 +615,9 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous"></script>
+
 <script>
   const heroFlavors = [
     { name:'Cola',         tag:'#e53935', layer:'hero-bg-cola' },
@@ -644,33 +664,121 @@
   updateHero();
   restartHeroTimer();
 
-  const revealEls = document.querySelectorAll('.manifesto .line, .final .line');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
-  }, { threshold: .5 });
-  revealEls.forEach(el => io.observe(el));
+  const gsapReady = !!(window.gsap && window.ScrollTrigger);
+  if (gsapReady) {
+    gsap.registerPlugin(ScrollTrigger);
+    document.documentElement.classList.add('gsap-ready');
+  }
 
-  const reList = document.getElementById('reList');
-  let openPanel = null;
-  reList.querySelectorAll('.re-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const isOpen = item.classList.contains('active');
-      if (openPanel) { openPanel.panel.classList.remove('open'); openPanel.item.classList.remove('active'); }
-      if (isOpen) { openPanel = null; return; }
-      const tag = item.dataset.tag;
-      item.style.setProperty('--tag', tag);
-      item.classList.add('active');
-      let panel = item.nextElementSibling && item.nextElementSibling.classList.contains('re-panel') ? item.nextElementSibling : null;
-      if (!panel) {
-        panel = document.createElement('div');
-        panel.className = 're-panel';
-        panel.innerHTML = `<img src="${item.dataset.img}" alt="${item.dataset.flavor}"><div class="txt"><div class="flavor-h" style="color:${tag}">${item.dataset.flavor}</div><p>${item.dataset.desc}</p></div>`;
-        item.after(panel);
-      }
-      requestAnimationFrame(() => panel.classList.add('open'));
-      openPanel = { item, panel };
+  // ---------- Manifesto / Final line reveal ----------
+  const revealEls = document.querySelectorAll('.manifesto .line:not(.mega), .final .line');
+  if (gsapReady) {
+    revealEls.forEach(el => {
+      gsap.fromTo(el, { opacity: .12, y: 22 }, {
+        opacity: 1, y: 0, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 90%', end: 'top 58%', scrub: .6 }
+      });
     });
-  });
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+    }, { threshold: .5 });
+    revealEls.forEach(el => io.observe(el));
+  }
+
+  // ---------- Age of RE ----------
+  const reList = document.getElementById('reList');
+  const ageHint = document.getElementById('ageHint');
+  const reItems = Array.from(reList.querySelectorAll('.re-item'));
+
+  function openStage(item, { autoClose = true } = {}) {
+    const tag = item.dataset.tag;
+    item.style.setProperty('--tag', tag);
+    item.classList.add('active');
+    let panel = item.nextElementSibling && item.nextElementSibling.classList.contains('re-panel') ? item.nextElementSibling : null;
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 're-panel';
+      panel.innerHTML = `<img src="${item.dataset.img}" alt="${item.dataset.flavor}"><div class="txt"><div class="flavor-h" style="color:${tag}">${item.dataset.flavor}</div><p>${item.dataset.desc}</p></div>`;
+      item.after(panel);
+    }
+    requestAnimationFrame(() => panel.classList.add('open'));
+    return panel;
+  }
+  function closeStage(item) {
+    item.classList.remove('active');
+    const panel = item.nextElementSibling && item.nextElementSibling.classList.contains('re-panel') ? item.nextElementSibling : null;
+    if (panel) panel.classList.remove('open');
+  }
+
+  if (gsapReady) {
+    ScrollTrigger.matchMedia({
+      '(min-width: 861px)': function () {
+        ageHint.textContent = 'Keep scrolling to live each one.';
+        const agePin = document.getElementById('agePin');
+        let activeIdx = -1;
+
+        function activateStage(idx) {
+          if (idx === activeIdx) return;
+          activeIdx = idx;
+          reItems.forEach((item, i) => (i === idx ? openStage(item) : closeStage(item)));
+          agePin.style.setProperty('--stage-tag', reItems[idx].dataset.tag);
+        }
+
+        const st = ScrollTrigger.create({
+          trigger: '.age',
+          start: 'top top',
+          end: () => '+=' + Math.round(window.innerHeight * reItems.length * .8),
+          pin: agePin,
+          scrub: .6,
+          onUpdate: self => activateStage(Math.min(reItems.length - 1, Math.floor(self.progress * reItems.length))),
+        });
+        activateStage(0);
+
+        const clickHandlers = reItems.map((item, i) => {
+          const handler = () => {
+            const target = st.start + ((i + .5) / reItems.length) * (st.end - st.start);
+            window.scrollTo({ top: target, behavior: 'smooth' });
+          };
+          item.addEventListener('click', handler);
+          return handler;
+        });
+
+        return () => {
+          st.kill();
+          reItems.forEach((item, i) => { item.removeEventListener('click', clickHandlers[i]); closeStage(item); });
+        };
+      },
+
+      '(max-width: 860px)': function () {
+        ageHint.textContent = 'Tap one to hear what it stands for.';
+        let openItem = null;
+        const clickHandlers = reItems.map(item => {
+          const handler = () => {
+            const isOpen = item.classList.contains('active');
+            if (openItem && openItem !== item) closeStage(openItem);
+            if (isOpen) { closeStage(item); openItem = null; return; }
+            openStage(item);
+            openItem = item;
+          };
+          item.addEventListener('click', handler);
+          return handler;
+        });
+        return () => reItems.forEach((item, i) => item.removeEventListener('click', clickHandlers[i]));
+      }
+    });
+  } else {
+    let openItem = null;
+    reItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const isOpen = item.classList.contains('active');
+        if (openItem && openItem !== item) closeStage(openItem);
+        if (isOpen) { closeStage(item); openItem = null; return; }
+        openStage(item);
+        openItem = item;
+      });
+    });
+  }
 </script>
 
 </body>
