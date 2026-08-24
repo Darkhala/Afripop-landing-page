@@ -247,7 +247,7 @@
     position:relative;overflow-x:hidden;overflow-y:auto;
     padding:clamp(64px,12vh,130px) clamp(20px,5vw,64px);
     display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:start;
-    --stage-tag:#c9a227;transition:--stage-tag 1s var(--ease);
+    --stage-tag:#c9a227;transition:--stage-tag .55s var(--ease);
   }
   .age-pin::before{
     content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
@@ -265,7 +265,7 @@
   .re-item .word{font-family:'Comfortaa',sans-serif;font-weight:700;font-size:clamp(1.3rem,2.8vw,2rem);transition:color .3s;}
   .re-item .flavor-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,246,229,.4);}
   .re-item.active .word{color:var(--tag,var(--gold));}
-  .re-panel{margin-top:16px;padding:24px;background:rgba(255,246,229,.06);border-radius:20px;display:flex;align-items:center;gap:22px;max-height:0;opacity:0;overflow:hidden;transition:max-height .5s var(--ease), opacity .4s var(--ease), padding .5s var(--ease);}
+  .re-panel{margin-top:16px;padding:24px;background:rgba(255,246,229,.06);border-radius:20px;display:flex;align-items:center;gap:22px;max-height:0;opacity:0;overflow:hidden;transition:max-height .32s var(--ease), opacity .26s var(--ease), padding .32s var(--ease);}
   .re-panel.open{max-height:220px;opacity:1;}
   .re-panel img{width:66px;filter:drop-shadow(0 10px 14px rgba(0,0,0,.4));}
   .re-panel .txt p{color:rgba(255,246,229,.65);font-size:.88rem;line-height:1.6;max-width:380px;}
@@ -691,8 +691,10 @@
   }
 
   // ---------- Smooth momentum scroll (desktop only; touch devices keep native scroll) ----------
+  let lenisInstance = null;
   if (gsapReady && window.Lenis && window.matchMedia('(min-width: 861px) and (hover: hover)').matches) {
     const lenis = new Lenis({ duration: .75, smoothWheel: true, syncTouch: false, touchMultiplier: 0 });
+    lenisInstance = lenis;
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
@@ -810,20 +812,48 @@
           agePin.style.setProperty('--stage-tag', reItems[idx].dataset.tag);
         }
 
+        const stageCount = reItems.length;
+        const snapStep = 1 / (stageCount - 1);
+
         const st = ScrollTrigger.create({
           trigger: '.age',
           start: 'top top',
-          end: () => '+=' + Math.round(window.innerHeight * reItems.length * .8),
+          end: () => '+=' + Math.round(window.innerHeight * stageCount * .8),
           pin: agePin,
           scrub: true,
-          onUpdate: self => activateStage(Math.min(reItems.length - 1, Math.floor(self.progress * reItems.length))),
+          // With Lenis driving the scroll, ScrollTrigger's own snap would fight it for
+          // control of the scroll position — so Lenis is instead nudged to the nearest
+          // stage once it settles (below). Only use GSAP's native snap when Lenis isn't active.
+          snap: lenisInstance ? false : { snapTo: snapStep, duration: { min: .15, max: .4 }, ease: 'power1.inOut' },
+          onUpdate: self => activateStage(Math.round(self.progress * (stageCount - 1))),
         });
         activateStage(0);
 
+        function stageScrollTarget(i) {
+          return st.start + (i / (stageCount - 1)) * (st.end - st.start);
+        }
+
+        let unbindSnap = null;
+        if (lenisInstance) {
+          let snapTimer = null;
+          unbindSnap = lenisInstance.on('scroll', () => {
+            clearTimeout(snapTimer);
+            snapTimer = setTimeout(() => {
+              if (!st.isActive) return;
+              const idx = Math.min(stageCount - 1, Math.round(st.progress * (stageCount - 1)));
+              const target = stageScrollTarget(idx);
+              if (Math.abs(lenisInstance.scroll - target) > 2) {
+                lenisInstance.scrollTo(target, { duration: .45, easing: t => 1 - Math.pow(1 - t, 3) });
+              }
+            }, 200);
+          });
+        }
+
         const clickHandlers = reItems.map((item, i) => {
           const handler = () => {
-            const target = st.start + ((i + .5) / reItems.length) * (st.end - st.start);
-            window.scrollTo({ top: target, behavior: 'smooth' });
+            const target = stageScrollTarget(i);
+            if (lenisInstance) lenisInstance.scrollTo(target, { duration: .9 });
+            else window.scrollTo({ top: target, behavior: 'smooth' });
           };
           item.addEventListener('click', handler);
           return handler;
@@ -831,6 +861,7 @@
 
         return () => {
           st.kill();
+          if (typeof unbindSnap === 'function') unbindSnap();
           agePin.classList.remove('age-scroll-mode');
           reItems.forEach((item, i) => { item.removeEventListener('click', clickHandlers[i]); closeStage(item); });
         };
