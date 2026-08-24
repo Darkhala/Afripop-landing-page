@@ -244,7 +244,7 @@
   @property --stage-tag{ syntax:'<color>'; inherits:true; initial-value:#c9a227; }
   .age{background:linear-gradient(150deg, var(--ink), #2c2c2c);color:var(--cream);}
   .age-pin{
-    position:relative;overflow:hidden;
+    position:relative;overflow-x:hidden;overflow-y:auto;
     padding:clamp(64px,12vh,130px) clamp(20px,5vw,64px);
     display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:start;
     --stage-tag:#c9a227;transition:--stage-tag 1s var(--ease);
@@ -270,6 +270,20 @@
   .re-panel img{width:66px;filter:drop-shadow(0 10px 14px rgba(0,0,0,.4));}
   .re-panel .txt p{color:rgba(255,246,229,.65);font-size:.88rem;line-height:1.6;max-width:380px;}
   .re-panel .txt .flavor-h{font-family:'Comfortaa',sans-serif;font-weight:700;margin-bottom:8px;color:var(--tag,var(--gold));}
+
+  /* Pinned scroll-story mode: hard-cap to one viewport so nothing gets clipped while pinned */
+  .age-scroll-mode{
+    height:100vh;align-items:center;
+    padding:clamp(24px,4vh,56px) clamp(20px,5vw,64px);
+  }
+  .age-scroll-mode .age-head h2{font-size:clamp(1.9rem,3.4vw,2.8rem);}
+  .age-scroll-mode .age-head .eyebrow{margin-bottom:12px;}
+  .age-scroll-mode .age-head p{margin-top:10px;font-size:.82rem;max-width:320px;line-height:1.5;}
+  .age-scroll-mode .re-item{padding:13px 6px;}
+  .age-scroll-mode .re-panel{margin-top:8px;padding:16px;gap:16px;}
+  .age-scroll-mode .re-panel.open{max-height:150px;}
+  .age-scroll-mode .re-panel img{width:48px;}
+  .age-scroll-mode .re-panel .txt p{font-size:.82rem;line-height:1.5;}
 
   /* ---------- FIND / CTA ---------- */
   .find{
@@ -716,6 +730,7 @@
       '(min-width: 861px)': function () {
         ageHint.textContent = 'Keep scrolling to live each one.';
         const agePin = document.getElementById('agePin');
+        agePin.classList.add('age-scroll-mode');
         let activeIdx = -1;
 
         function activateStage(idx) {
@@ -746,6 +761,7 @@
 
         return () => {
           st.kill();
+          agePin.classList.remove('age-scroll-mode');
           reItems.forEach((item, i) => { item.removeEventListener('click', clickHandlers[i]); closeStage(item); });
         };
       },
